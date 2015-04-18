@@ -9,7 +9,28 @@ div.orgChart h2 {
   font-size : 16px;
   font-weight: normal;
   min-height: 20px;
+    width: 150px;
+    display:inline-block;
 }
+
+.dd {
+    width: 200px;
+    height: 25px;
+}
+.pp{
+    display:inline-block;
+    width: 17px;
+}
+
+.pp2{
+    width: 16px;
+    display:inline-block;
+}
+
+.dc{
+    width: 60px;
+}
+
 
 div.orgChart h2:hover {
   background: #fcfaca;

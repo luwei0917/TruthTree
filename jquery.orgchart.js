@@ -15,6 +15,30 @@
         newTextText: 'Add Title'
     };
 
+    function rtcheckbox(nid, iter){
+        var st = '<input type="checkbox">';
+        var st2 = '<input type="text" class=pp2>';
+        var h2 = '<h2 hid='+iter+'>'+'sth'+'</h2>';
+        var div = '<div ddid=' + iter + '>' + st+h2 + st2+ '</div>';
+        return div;
+    }
+
+    function rtcheckbox(nid, iter, content){
+        var st = '<input type="text" class=pp id=n' + nid +'h'+iter +'>';
+        var st2 = '<input type="text" class=pp2 id=n' + nid +'h'+iter +'>';
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        var div = '<div class=dd ddid=' + iter + '>' + st+h2+st2 + '</div>';
+        return div;
+    }
+
+    function rth2(iter, content){
+
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        return h2;
+    }
+
+
+
     function OrgChart($container, opts){
         var data = opts.data;
         var nodes = {};
@@ -25,7 +49,8 @@
 
 
         this.draw = function(){
-            $container.empty().append(rootNodes[0].render(opts));
+            $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
+            $container.append(rootNodes[0].render(opts));
             $container.find('.node').click(function(){
                 if(self.opts.onClickNode !== null){
                     self.opts.onClickNode(nodes[$(this).attr('node-id')]);
@@ -33,13 +58,41 @@
             });
 
             if(opts.allowEdit){
-                $container.find('.node h2').click(function(e){
-                    var thisId = $(this).parent().attr('node-id');
+                $container.find('.node .dd h2').click(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
                     var hid = $(this).attr('hid');
                     self.startEdit(thisId,hid);
                     e.stopPropagation();
                 });
             }
+            function rightdecision(num)
+            {
+                var nodlis = [];
+                alert('got ' + num);
+                var x = document.getElementsByClassName("pp");
+                for (var i = 0; i < x.length; i++)
+                {
+                    if ($(x[i]).val() == num)
+                        nodlis.push($(x[i]).parent().find('h2').text());
+                }
+                alert(nodlis);
+            }
+            $container.find('.checkb').click(function(e){
+                //alert('ckb!!!');
+                 var ccc = $container;
+                 //ccc = $container.find('.pp2');
+                var x = document.getElementsByClassName("pp2");
+                for (var i = 0; i < x.length; i++)
+                {
+                    //alert($(x[i]).val());
+                    if ($(x[i]).val() !== '')
+                        return rightdecision($(x[i]).val());
+                }
+                alert('no input on right');
+
+            });
+
+
 
             // add "add button" listener
             $container.find('.org-add-button').click(function(e){
@@ -74,13 +127,14 @@
                 }
                 e.stopPropagation();
             });
+
         }
 
         this.addnewtext = function(id, iter){
-             var inputElement = $('<h2 hid='+iter+'>'+'sth'+'</h2>');
-            $container.find('div[node-id='+id+'] h2[hid='+(iter-1)+']').parent().append(inputElement);
-            $container.find('.node h2').click(function(e){
-                    var thisId = $(this).parent().attr('node-id');
+             var inputElement = $(rtcheckbox(id,iter));
+            $container.find('div[node-id='+id+'] h2[hid='+(iter-1)+']').parent().parent().append(inputElement);
+            $container.find('.node .dd h2').click(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
                     var hid = $(this).attr('hid');
                     self.startEdit(thisId,hid);
                     e.stopPropagation();
@@ -89,9 +143,10 @@
 
         this.startEdit = function(id,hid){
             var inputElement = $('<input class="org-input" type="text" value="'+''+'"/>'); //nodes[id].data.name
-            $container.find('div[node-id='+id+'] h2[hid='+hid+']').replaceWith(inputElement);
+            $container.find('div[node-id='+id+'] div[ddid='+hid+'] h2[hid='+hid+']').replaceWith(inputElement);
+            //alert('div[node-id='+id+'] div[ddid='+hid+'] h2[hid='+hid+']');
             var commitChange = function(){
-                var h2Element = $('<h2 hid='+hid+'>'+nodes[id].data.name[hid-1]+'</h2>');
+                var h2Element = $(rth2(hid,nodes[id].data.name[hid-1]));
                 //var h2Element = $('<h2>'+adfasfsaf+'</h2>');
                 if(opts.allowEdit){
                     h2Element.click(function(){
@@ -243,14 +298,16 @@
             if(typeof data.name[0] !== 'undefined'){
                 for(i=0;i<data.name.length;i++)
                 {
-                nameString = nameString+ '<h2 hid='+(i+1)+'>'+self.data.name[i]+'</h2>';
+                //nameString = nameString+ '<h2 hid='+(i+1)+'>'+self.data.name[i]+'</h2>';
+                    nameString = nameString + rtcheckbox(data.id, i+1, self.data.name[i])
                     this.iter = i+1;
                 }
             }
             else if(typeof data.name[0] == 'undefined'){
                 self.data.name = [];
                 self.data.name.push('');
-                nameString = nameString+ '<h2 hid='+1+'>'+self.data.name[0]+'</h2>';
+                //nameString = nameString+ '<h2 hid='+1+'>'+self.data.name[0]+'</h2>';
+                nameString = nameString + rtcheckbox(data.id, 1,self.data.name[0]);
             }
             if(typeof data.description !== 'undefined'){
                 descString = '<p>'+self.data.description+'</p>';
