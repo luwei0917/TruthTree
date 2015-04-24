@@ -1,6 +1,6 @@
 
 var testData = [
-    {id: 1, name: ["My Organization",'bbb'], parent: 0},
+    {id: 1, name: ['(A | !B) == !C','C','!(B -> (A | D) )'], parent: 0},
     {id: 2, name: ['CEO Office'], parent: 1},
     {id: 3, name: ['Division 1'], parent: 1},
 
@@ -29,3 +29,4 @@ $(function(){
 function log(text){
     $('#consoleOutput').append('<p>'+text+'</p>')
 }
+

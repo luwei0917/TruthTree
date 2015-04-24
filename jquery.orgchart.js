@@ -5,7 +5,7 @@
     }
 
     $.fn.orgChart.defaults = {
-        data: [{id:1, name:'Root', parent: 0}],
+        data: [{id:1, name:'Root', parent: 0, isEnd:false}],
         showControls: false,
         allowEdit: false,
         onAddNode: null,
@@ -65,31 +65,73 @@
                     e.stopPropagation();
                 });
             }
+            // below is the main logic function
+            function isBranchClose(originStatement){
+                if(originStatement.length != 2){
+                    return false
+                }
+                
+                var first = originStatement[0]
+                var second = originStatement[1]
+                
+            }
+            // end of main logic function
             function rightdecision(num)
             {
-                var nodlis = [];
-                alert('got ' + num);
+                var newStatements = [];
+                var originStatement = [];
+                var originNodeList = [];
+                //alert('got ' + num);
                 var x = document.getElementsByClassName("pp");
                 for (var i = 0; i < x.length; i++)
                 {
                     if ($(x[i]).val() == num)
-                        nodlis.push($(x[i]).parent().find('h2').text());
+                        newStatements.push($(x[i]).parent().find('h2').text());
                 }
-                alert(nodlis);
+                x = document.getElementsByClassName("pp2");
+                for (var i = 0; i < x.length; i++)
+                {
+                    if ($(x[i]).val() == num){
+                        originStatement.push($(x[i]).parent().find('h2').text());
+                        originNodeList.push($(x[i]).attr('id') )
+                    }
+                }
+                alert(originStatement);
+                alert(newStatements);
+                alert(originNodeList);
+                isBranchClose(originStatement, originNodeList)
+                
+                
+                
             }
             $container.find('.checkb').click(function(e){
                 //alert('ckb!!!');
-                 var ccc = $container;
+                var ccc = $container;
                  //ccc = $container.find('.pp2');
                 var x = document.getElementsByClassName("pp2");
                 for (var i = 0; i < x.length; i++)
                 {
                     //alert($(x[i]).val());
                     if ($(x[i]).val() !== '')
-                        return rightdecision($(x[i]).val());
+                         rightdecision($(x[i]).val());
                 }
-                alert('no input on right');
+                //alert('no input on right');
 
+                
+                var allDone = true;
+                for( key in nodes){
+                    if(nodes[key].children.length != 0){
+                        nodes[key].data.isEnd = true
+                    }
+//                    console.log(node)
+                    if (nodes[key].data.isEnd == false){
+                        allDone = false
+                    }
+                }
+                if(allDone == true){
+                    alert('Congratulation')
+                }
+                console.log(nodes);
             });
 
 
@@ -298,12 +340,14 @@
             if(typeof data.name[0] !== 'undefined'){
                 for(i=0;i<data.name.length;i++)
                 {
+                    self.data.isEnd = false;
                 //nameString = nameString+ '<h2 hid='+(i+1)+'>'+self.data.name[i]+'</h2>';
                     nameString = nameString + rtcheckbox(data.id, i+1, self.data.name[i])
                     this.iter = i+1;
                 }
             }
             else if(typeof data.name[0] == 'undefined'){
+                self.data.isEnd = false;
                 self.data.name = [];
                 self.data.name.push('');
                 //nameString = nameString+ '<h2 hid='+1+'>'+self.data.name[0]+'</h2>';
