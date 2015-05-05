@@ -37,7 +37,7 @@
         return h2;
     }
 
-    function callcheck()
+    function showcheck()
     {
         $(".checkmark").show();
     }
@@ -65,7 +65,7 @@
                 }
             });
 
-            if(opts.allowEdfit){
+            if(opts.allowEdit){
                 $container.find('.node .dd h2').click(function(e){
                     var thisId = $(this).parent().parent().attr('node-id');
                     var hid = $(this).attr('hid');
@@ -74,63 +74,183 @@
                 });
             }
 
+
+
 // below is the main logic function
+
+function myClose(first, second){
+    if(first.operator == '!'){
+        if(JSON.stringify( first.argument) === JSON.stringify(second)){
+            return true
+        }
+    }
+    return false
+}
 function isBranchClose(originStatement){
     if(originStatement.length != 2){
         return false
     }
 
-    var first = originStatement[0]
-    var second = originStatement[1]
+    var first = jsep(originStatement[0]);
+    var second = jsep(originStatement[1]);
 
+    if( myClose(first,second)){
+        return true
+    }
+    if( myClose(second,first)){
+        return true
+    }
+    return false
 }
-function MynotAndImply(origin,first,second){
+
+function myNotAndImply(origin,first,second){
     if(origin.operator == '!'){
         // alert('haapy')
         if(origin.argument.operator == "->"){
             // alert('->')
             if (JSON.stringify( origin.argument.left ) === JSON.stringify(first)){
                 // alert('first')
-                if(JSON.stringify( origin.argument.right ) === JSON.stringify(second)){
-                    // alert('real haapy')
-                    return true
+                if(second.operator == '!'){
+                    if(JSON.stringify( origin.argument.right ) === JSON.stringify(second.argument)){
+                        // alert('real haapy')
+                        return true
+                    }
                 }
+
             }
         }
     }
     return false
 }
-// two possible ways
-function notAndImply(origin,first,second){
-    if(MynotAndImply(origin,first,second) ){
+function myOr(origin,first,second){
+    if(origin.operator == "|"){
+        if( JSON.stringify( origin.left) === JSON.stringify( first)){
+            if( JSON.stringify( origin.right) === JSON.stringify( second) ){
+                return true
+            }
+        }
+    }
+    return false
+}
+function myNotOr(origin,first,second){
+    if(origin.operator == '!'){
+        // alert('haapy')
+        if(origin.argument.operator == "|"){
+            // alert('->')
+            if(first.operator == "!"){
+                if (JSON.stringify( origin.argument.left ) === JSON.stringify(first.argument)){
+                    if(second.operator == '!'){
+                        if(JSON.stringify( origin.argument.right ) === JSON.stringify(second.argument)){
+                            // alert('real haapy')
+                            return true
+                        }
+                    }
+
+                }
+            }
+            
+        }
+    }
+    return false
+}
+
+function oneToTwo(origin,first,second){
+    list = [myNotAndImply,myNotOr,myOr];
+    for (var i = list.length - 1; i >= 0; i--) {
+        if( list[i](origin,first, second) )
+            return true
+        if( list[i](origin,second, first))
+            return true
+    };
+    return false
+}
+function notNot(origin,first){
+    if(origin.operator == '!'){
+        if(origin.argument.operator == '!'){
+            if( JSON.stringify( origin.argument.argument) == JSON.stringify( first) ) {
+                return true
+            }
+        }
+    }
+    return false
+}
+function myEqual(origin, first, second, third, fourth){
+    if(origin.operator == '=='){
+        if(JSON.stringify( origin.left ) === JSON.stringify( first ) ){
+            if( JSON.stringify( origin.right ) === JSON.stringify( second ) ){
+                if( third.operator == '!' ){
+                    if( JSON.stringify( origin.left ) === JSON.stringify( third.argument ) ){
+                        if (fourth.operator == '!'){
+                            if (JSON.stringify( origin.left ) === JSON.stringify( third.argument )){
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+function equal(origin,first,second,third,fourth){
+    if(myEqual(origin, first, second, third, fourth) ){
         return true
     }
-    if(MynotAndImply(origin,second,first)){
+    if(myEqual(origin, second,first, third, fourth) ){
+        return true
+    }
+    if(myEqual(origin, first, second, fourth, third) ){
+        return true
+    }
+    if(myEqual(origin, second,first, fourth, third) ){
         return true
     }
     return false
 }
 
 function isCorrect(originStatement,newStatements){
-    if(originStatement.length != 1){
-        alert('only one in the right side')
-        return false
-    }
     if (originStatement.length == 1){
+        if(newStatements.length == 1){
+            var origin = jsep(originStatement[0]);
+            var firstNew = jsep(newStatements[0]);
+            if (notNot(origin,firstNew) ){
+                log(originStatement + ' -------> ' +newStatements + ' Check!');
+                return true
+            }
+        }
         if(newStatements.length == 2){
             var origin = jsep(originStatement[0]);
             var firstNew = jsep(newStatements[0]);
             var secondNew = jsep(newStatements[1]);
-            console.log(origin)
-            console.log(firstNew)
-            console.log(secondNew)
+            // console.log(origin)
+            // console.log(firstNew)
+            // console.log(secondNew)
 
             //try all possibility
-            if (notAndImply(origin,firstNew,secondNew) )
-                alert('really happy')
+            if (oneToTwo(origin,firstNew,secondNew) ){
+                log(originStatement + ' -------> ' +newStatements + ' Check!');
+                return true
+            }
+            // if (notOr(origin,firstNew,secondNew) ){
+            //     log(originStatement + ' -------> ' +newStatements + ' Check!');
+            // }
 
         }
+        if(newStatements.length == 4){
+            // alert(newStatements)
+            var origin = jsep(originStatement[0]);
+            var firstNew = jsep(newStatements[0]);
+            var secondNew = jsep(newStatements[1]);
+            var thirdNew = jsep(newStatements[2]);
+            var fourthNew = jsep(newStatements[3]);    
+            // console.log(origin);
+            if( equal(origin, firstNew,secondNew,thirdNew,fourthNew)){
+                log(originStatement + ' -------> ' +newStatements + ' Check!');
+                return true
+            }
+        }
     }
+    log(originStatement + ' -------> ' +newStatements + ' Problem!');
+    return false
 }
 
 // end of main logic function
@@ -158,22 +278,52 @@ function isCorrect(originStatement,newStatements){
                 // alert(originStatement);
                 // alert(newStatements);
                 // alert(originNodeList);
-                // isBranchClose(originStatement, originNodeList)
-                isCorrect(originStatement,newStatements)
+                if(newStatements.length == 0){
+                    isBranchClose(originStatement)
+                        // console.log(nodes);
+                        myMaxNumber = 0;
+                        // console.log('-------------')
+                        // console.log(originNodeList[0])
+                        for(i in originNodeList){
+                            number = parseInt (originNodeList[i].split(/(\d)/)[1]);
+                            if (number > myMaxNumber ){
+                                myMaxNumber = number;
+                            }
+                            console.log(i);
+                        }
+                        nodes[myMaxNumber].data.isEnd = true;
+                        console.log(nodes);
+                        log(originStatement + ' -------> '+  ' Branch ' +myMaxNumber+ ' Closed');
+                        return true
+                }
+                return isCorrect(originStatement,newStatements)
 
 
             }
             $container.find('.checkb').click(function(e){
                 //alert('ckb!!!');
                 var ccc = $container;
+                $('#consoleOutput').text("");
+                for( key in nodes){
+                    nodes[key].data.isEnd = false;
                  //ccc = $container.find('.pp2');
-                callcheck();
+                }
+                // callcheck();
                 var x = document.getElementsByClassName("pp2");
+                var myValueMap = new Map();
+                var someFalse = false;
                 for (var i = 0; i < x.length; i++)
                 {
+                    if(myValueMap.get( $(x[i]).val() ) === undefined){
+                        myValueMap.set($(x[i]).val() , "exist");
+                        if ($(x[i]).val() !== '')
+                            if ( rightdecision($(x[i]).val()) === false){
+                                someFalse = true;
+                            }
+                    }
+
                     //alert($(x[i]).val());
-                    if ($(x[i]).val() !== '')
-                         rightdecision($(x[i]).val());
+
                 }
                 //alert('no input on right');
 
@@ -188,8 +338,13 @@ function isCorrect(originStatement,newStatements){
                         allDone = false
                     }
                 }
-                if(allDone == true){
-                    alert('Congratulation')
+                if(allDone == true && someFalse == false){
+                    alert('Congratulation');
+                    $(".checkmark").show();
+
+                }
+                else{
+                    $(".checkmark").hide();
                 }
                 // console.log(nodes);
             });
@@ -244,7 +399,9 @@ function isCorrect(originStatement,newStatements){
         }
 
         this.startEdit = function(id,hid){
-            var inputElement = $('<input class="org-input" type="text" value="'+''+'"/>'); //nodes[id].data.name
+             //nodes[id].data.name
+            var xxx = $container.find('div[node-id='+id+'] div[ddid='+hid+'] h2[hid='+hid+']').text();
+            var inputElement = $('<input class="org-input" type="text" value="'+xxx+'"/>');
             $container.find('div[node-id='+id+'] div[ddid='+hid+'] h2[hid='+hid+']').replaceWith(inputElement);
             //alert('div[node-id='+id+'] div[ddid='+hid+'] h2[hid='+hid+']');
             var commitChange = function(){
