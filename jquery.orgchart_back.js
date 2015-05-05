@@ -37,12 +37,6 @@
         return h2;
     }
 
-    function callcheck()
-    {
-        $(".checkmark").show();
-    }
-
-
 
 
     function OrgChart($container, opts){
@@ -56,8 +50,6 @@
 
         this.draw = function(){
             $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
-            $container.append("<div class='checkmark'><\div>");
-
             $container.append(rootNodes[0].render(opts));
             $container.find('.node').click(function(){
                 if(self.opts.onClickNode !== null){
@@ -65,7 +57,7 @@
                 }
             });
 
-            if(opts.allowEdfit){
+            if(opts.allowEdit){
                 $container.find('.node .dd h2').click(function(e){
                     var thisId = $(this).parent().parent().attr('node-id');
                     var hid = $(this).attr('hid');
@@ -79,7 +71,7 @@ function isBranchClose(originStatement){
     if(originStatement.length != 2){
         return false
     }
-
+    
     var first = originStatement[0]
     var second = originStatement[1]
 
@@ -97,7 +89,7 @@ function MynotAndImply(origin,first,second){
                 }
             }
         }
-    }
+    } 
     return false
 }
 // two possible ways
@@ -128,7 +120,7 @@ function isCorrect(originStatement,newStatements){
             //try all possibility
             if (notAndImply(origin,firstNew,secondNew) )
                 alert('really happy')
-
+            
         }
     }
 }
@@ -160,14 +152,13 @@ function isCorrect(originStatement,newStatements){
                 // alert(originNodeList);
                 // isBranchClose(originStatement, originNodeList)
                 isCorrect(originStatement,newStatements)
-
-
+                
+                
             }
             $container.find('.checkb').click(function(e){
                 //alert('ckb!!!');
                 var ccc = $container;
                  //ccc = $container.find('.pp2');
-                callcheck();
                 var x = document.getElementsByClassName("pp2");
                 for (var i = 0; i < x.length; i++)
                 {
@@ -177,7 +168,7 @@ function isCorrect(originStatement,newStatements){
                 }
                 //alert('no input on right');
 
-
+                
                 var allDone = true;
                 for( key in nodes){
                     if(nodes[key].children.length != 0){
