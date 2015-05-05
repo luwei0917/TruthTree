@@ -1,9 +1,8 @@
-
 var testData = [
-    {id: 1, name: ['(A | !B) == !C','C','!(B -> (A | D) )'], parent: 0},
-    {id: 2, name: ['CEO Office'], parent: 1},
+    {id: 1, name: ['!(A | !B) == !C','C','!(B -> (A | D) )','B','A | D'], parent: 0},
+    {id: 2, name: ['B'], parent: 1},
     {id: 3, name: ['Division 1'], parent: 1},
-
+// !(((P && Q) >> R) == (P >>(!Q || R)))
 ];
 $(function(){
     org_chart = $('#orgChart').orgChart({
@@ -30,3 +29,5 @@ function log(text){
     $('#consoleOutput').append('<p>'+text+'</p>')
 }
 
+jsep.addBinaryOp("<->", 10);
+jsep.addBinaryOp("->", 10);

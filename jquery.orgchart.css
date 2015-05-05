@@ -75,7 +75,7 @@ div.orgChart div.node {
   display : inline-block;
   padding : 5px;
   width : 196px; /*default 96*/
-  height : 120px; /*default 60*/
+  height : 170px; /*default 60*/
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top, #ffffff 0%, #fbfbfb 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #fbfbfb)); /* Chrome,Safari4+ */

@@ -65,17 +65,67 @@
                     e.stopPropagation();
                 });
             }
-            // below is the main logic function
-            function isBranchClose(originStatement){
-                if(originStatement.length != 2){
-                    return false
+
+// below is the main logic function
+function isBranchClose(originStatement){
+    if(originStatement.length != 2){
+        return false
+    }
+    
+    var first = originStatement[0]
+    var second = originStatement[1]
+
+}
+function MynotAndImply(origin,first,second){
+    if(origin.operator == '!'){
+        // alert('haapy')
+        if(origin.argument.operator == "->"){
+            // alert('->')
+            if (JSON.stringify( origin.argument.left ) === JSON.stringify(first)){
+                // alert('first')
+                if(JSON.stringify( origin.argument.right ) === JSON.stringify(second)){
+                    // alert('real haapy')
+                    return true
                 }
-                
-                var first = originStatement[0]
-                var second = originStatement[1]
-                
             }
-            // end of main logic function
+        }
+    } 
+    return false
+}
+// two possible ways
+function notAndImply(origin,first,second){
+    if(MynotAndImply(origin,first,second) ){
+        return true
+    }
+    if(MynotAndImply(origin,second,first)){
+        return true
+    }
+    return false
+}
+
+function isCorrect(originStatement,newStatements){
+    if(originStatement.length != 1){
+        alert('only one in the right side')
+        return false
+    }
+    if (originStatement.length == 1){
+        if(newStatements.length == 2){
+            var origin = jsep(originStatement[0]);
+            var firstNew = jsep(newStatements[0]);
+            var secondNew = jsep(newStatements[1]);
+            console.log(origin)
+            console.log(firstNew)
+            console.log(secondNew)
+
+            //try all possibility
+            if (notAndImply(origin,firstNew,secondNew) )
+                alert('really happy')
+            
+        }
+    }
+}
+
+// end of main logic function
             function rightdecision(num)
             {
                 var newStatements = [];
@@ -96,11 +146,12 @@
                         originNodeList.push($(x[i]).attr('id') )
                     }
                 }
-                alert(originStatement);
-                alert(newStatements);
-                alert(originNodeList);
-                isBranchClose(originStatement, originNodeList)
-                
+
+                // alert(originStatement);
+                // alert(newStatements);
+                // alert(originNodeList);
+                // isBranchClose(originStatement, originNodeList)
+                isCorrect(originStatement,newStatements)
                 
                 
             }
@@ -131,7 +182,7 @@
                 if(allDone == true){
                     alert('Congratulation')
                 }
-                console.log(nodes);
+                // console.log(nodes);
             });
 
 
