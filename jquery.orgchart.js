@@ -76,8 +76,9 @@
 
 
 
-// below is the main logic function
+//---------below is the main logic function--------------
 
+//branch close
 function myClose(first, second){
     if(first.operator == '!'){
         if(JSON.stringify( first.argument) === JSON.stringify(second)){
@@ -154,8 +155,24 @@ function myNotOr(origin,first,second){
     return false
 }
 
+function myNotAnd(origin, first,second){
+    if(origin.operator == '!'){
+        if(origin.argument.operator == "&"){
+            if(first.operator == "!"){
+                if(JSON.stringify( origin.argument.left ) === JSON.stringify( first.argument ) ) {
+                    if(second.operator == "!"){
+                        if(JSON.stringify( origin.argument.right ) === JSON.stringify( second.argument ) ){
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false
+}
 function oneToTwo(origin,first,second){
-    list = [myNotAndImply,myNotOr,myOr];
+    list = [myNotAndImply,myNotOr,myOr,myNotAnd];
     for (var i = list.length - 1; i >= 0; i--) {
         if( list[i](origin,first, second) )
             return true
