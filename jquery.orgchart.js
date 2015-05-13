@@ -1,84 +1,7 @@
-(function($) {
-    $.fn.orgChart = function(options) {
-        var opts = $.extend({}, $.fn.orgChart.defaults, options);
-        return new OrgChart($(this), opts);
-    }
-
-    $.fn.orgChart.defaults = {
-        data: [{id:1, name:'Root', parent: 0, isEnd:false}],
-        showControls: false,
-        allowEdit: false,
-        onAddNode: null,
-        onDeleteNode: null,
-        onClickNode: null,
-        newNodeText: 'Add Child',
-        newTextText: 'Add Title'
-    };
-
-    function rtcheckbox(nid, iter){
-        var st = '<input type="checkbox">';
-        var st2 = '<input type="text" class=pp2>';
-        var h2 = '<h2 hid='+iter+'>'+'sth'+'</h2>';
-        var div = '<div ddid=' + iter + '>' + st+h2 + st2+ '</div>';
-        return div;
-    }
-
-    function rtcheckbox(nid, iter, content){
-        var st = '<input type="text" class=pp id=n' + nid +'h'+iter +'>';
-        var st2 = '<input type="text" class=pp2 id=n' + nid +'h'+iter +'>';
-        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
-        var div = '<div class=dd ddid=' + iter + '>' + st+h2+st2 + '</div>';
-        return div;
-    }
-
-    function rth2(iter, content){
-
-        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
-        return h2;
-    }
-
-    function showcheck()
-    {
-        $(".checkmark").show();
-    }
-
-
-
-
-    function OrgChart($container, opts){
-        var data = opts.data;
-        var nodes = {};
-        var rootNodes = [];
-        this.opts = opts;
-        this.$container = $container;
-        var self = this;
-
-
-        this.draw = function(){
-            $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
-            $container.append("<div class='checkmark'><\div>");
-
-            $container.append(rootNodes[0].render(opts));
-            $container.find('.node').click(function(){
-                if(self.opts.onClickNode !== null){
-                    self.opts.onClickNode(nodes[$(this).attr('node-id')]);
-                }
-            });
-
-            if(opts.allowEdit){
-                $container.find('.node .dd h2').click(function(e){
-                    var thisId = $(this).parent().parent().attr('node-id');
-                    var hid = $(this).attr('hid');
-                    self.startEdit(thisId,hid);
-                    e.stopPropagation();
-                });
-            }
-
-
 
 //---------below is the main logic function--------------
 
-//branch close
+//check if branch close
 function myClose(first, second){
     if(first.operator == '!'){
         if(JSON.stringify( first.argument) === JSON.stringify(second)){
@@ -270,7 +193,89 @@ function isCorrect(originStatement,newStatements){
     return false
 }
 
-// end of main logic function
+//-------------end of main logic function-------------------------
+
+
+
+
+(function($) {
+    $.fn.orgChart = function(options) {
+        var opts = $.extend({}, $.fn.orgChart.defaults, options);
+        return new OrgChart($(this), opts);
+    }
+
+    $.fn.orgChart.defaults = {
+        data: [{id:1, name:'Root', parent: 0, isEnd:false}],
+        showControls: false,
+        allowEdit: false,
+        onAddNode: null,
+        onDeleteNode: null,
+        onClickNode: null,
+        newNodeText: 'Add Child',
+        newTextText: 'Add Title'
+    };
+
+    function rtcheckbox(nid, iter){
+        var st = '<input type="checkbox">';
+        var st2 = '<input type="text" class=pp2>';
+        var h2 = '<h2 hid='+iter+'>'+'sth'+'</h2>';
+        var div = '<div ddid=' + iter + '>' + st+h2 + st2+ '</div>';
+        return div;
+    }
+
+    function rtcheckbox(nid, iter, content){
+        var st = '<input type="text" class=pp id=n' + nid +'h'+iter +'>';
+        var st2 = '<input type="text" class=pp2 id=n' + nid +'h'+iter +'>';
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        var div = '<div class=dd ddid=' + iter + '>' + st+h2+st2 + '</div>';
+        return div;
+    }
+
+    function rth2(iter, content){
+
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        return h2;
+    }
+
+    function showcheck()
+    {
+        $(".checkmark").show();
+    }
+
+
+
+
+    function OrgChart($container, opts){
+        var data = opts.data;
+        var nodes = {};
+        var rootNodes = [];
+        this.opts = opts;
+        this.$container = $container;
+        var self = this;
+
+
+        this.draw = function(){
+            $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
+            $container.append("<div class='checkmark'><\div>");
+
+            $container.append(rootNodes[0].render(opts));
+            $container.find('.node').click(function(){
+                if(self.opts.onClickNode !== null){
+                    self.opts.onClickNode(nodes[$(this).attr('node-id')]);
+                }
+            });
+
+            if(opts.allowEdit){
+                $container.find('.node .dd h2').click(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var hid = $(this).attr('hid');
+                    self.startEdit(thisId,hid);
+                    e.stopPropagation();
+                });
+            }
+
+
+
             function rightdecision(num)
             {
                 var newStatements = [];
