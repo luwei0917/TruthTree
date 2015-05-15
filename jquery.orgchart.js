@@ -110,7 +110,7 @@
 
             this.savepp = function(id,pid,v){
                 nodes[id].data.pp[pid-1] = v;
-                console.log(nodes[id].data);
+                // console.log(nodes[id].data);
 
             }
             this.savepp2 = function(id,pid,v){
@@ -268,15 +268,19 @@ function equal(origin,first,second,third,fourth){
     return false
 }
 
-function isCorrect(originStatement,newStatements,newNodeList){
-    console.log(newNodeList);
-    number = [];
+function isCorrect(originStatement,newStatements,originNodeList,newNodeList){
+    // console.log(newNodeList);
+    // number is the node number of the statement.
+    Newnumbers = [];
     var myRe = /\d+/;
-    console.log(myRe.exec(newNodeList[0]) )
-    for (i in newNodeList) {
-        number.push( parseInt(newNodeList[i].split(/(\d)/)[0])  );
+    if(newNodeList.length > 0){
+        for (i in newNodeList) {
+            numbers.push( parseInt(myRe.exec(newNodeList[i]) )  );
+        }
     }
-    console.log(number)
+    originNumber = parseInt( myRe.exec(originNodeList[0])  )
+    console.log(originNumber)
+    console.log(Newnumbers)
     if (originStatement.length == 1){
         if(newStatements.length == 1){
             var origin = jsep(originStatement[0]);
@@ -339,7 +343,7 @@ function isCorrect(originStatement,newStatements,newNodeList){
                     }
 
                 }
-                console.log($(x[0]))
+                // console.log($(x[0]))
                 x = document.getElementsByClassName("pp2");
                 for (var i = 0; i < x.length; i++)
                 {
@@ -370,7 +374,7 @@ function isCorrect(originStatement,newStatements,newNodeList){
                         log(originStatement + ' -------> '+  ' Branch ' +myMaxNumber+ ' Closed');
                         return true
                 }
-                return isCorrect(originStatement,newStatements,newNodeList)
+                return isCorrect(originStatement,newStatements,originNodeList,newNodeList)
 
 
             }

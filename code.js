@@ -80,11 +80,11 @@ function log(text){
         $("#n1h4.pp2").val("9");
         $("#n5h1.pp2").val("9");
         var pp = document.getElementsByClassName('pp');
-        for ( i in pp){
+        for ( var i=0 ; i< pp.length; i++ ){
             $(pp[i]).trigger('focusout');
         }
         var pp2 = document.getElementsByClassName('pp2');
-        for ( i in pp2){
+        for ( var i=0 ; i< pp2.length; i++ ){
             $(pp2[i]).trigger('focusout');
         }
     });
