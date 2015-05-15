@@ -1,7 +1,128 @@
+(function($) {
+    $.fn.orgChart = function(options) {
+        var opts = $.extend({}, $.fn.orgChart.defaults, options);
+        return new OrgChart($(this), opts);
+    }
+
+    $.fn.orgChart.defaults = {
+        data: [{id:1, name:'Root', parent: 0, isEnd:false}],
+        showControls: false,
+        allowEdit: false,
+        onAddNode: null,
+        onDeleteNode: null,
+        onClickNode: null,
+        newNodeText: 'Add Child',
+        newTextText: 'Add Title'
+    };
+
+    function rtcheckbox(nid, iter){
+        var st = '<input type="checkbox">';
+        var st2 = '<input type="text" class=pp2>';
+        var h2 = '<h2 hid='+iter+'>'+'sth'+'</h2>';
+        var div = '<div ddid=' + iter + '>' + st+h2 + st2+ '</div>';
+        return div;
+    }
+
+    function rtcheckbox(nid, iter, content, pc, p2c){
+        if (pc === undefined || p2c ===undefined)
+        {
+            pc = '';
+            p2c = '';
+        }
+        var st = '<input type="text" class=pp id=n' + nid +'h'+iter + ' value=' +pc +'>';
+        var st2 = '<input type="text" class=pp2 id=n' + nid +'h'+iter + ' value=' +p2c +'>';
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        var div = '<div class=dd ddid=' + iter + '>' + st+h2+st2 + '</div>';
+        return div;
+    }
+
+    function rth2(iter, content){
+
+        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
+        return h2;
+    }
+
+    function showcheck()
+    {
+        $(".checkmark").show();
+    }
+
+
+
+
+    function OrgChart($container, opts){
+        var data = opts.data;
+        var nodes = {};
+        var rootNodes = [];
+        this.opts = opts;
+        this.$container = $container;
+        var self = this;
+
+
+        this.draw = function(){
+            $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
+            $container.append('<div class=dc><h2></h2><a class=saveb>Save!</button><\div>');
+            $container.append('<div class=dc><h2></h2><a class=loadb>Load!</button><\div>');
+            $container.append("<div class='checkmark'><\div>");
+
+            $container.append(rootNodes[0].render(opts));
+            $container.find('.node').click(function(){
+                if(self.opts.onClickNode !== null){
+                    self.opts.onClickNode(nodes[$(this).attr('node-id')]);
+                }
+            });
+
+
+            if(opts.allowEdit){
+                $container.find('.node .dd h2').click(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var hid = $(this).attr('hid');
+                    self.startEdit(thisId,hid);
+                    e.stopPropagation();
+                });
+
+                $container.find('.node .dd .pp').focusout(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var id = $(this).attr('id');
+                    id = (id.split('h'))[1];
+                    id = parseInt(id);
+                    var value = $(this).val();
+                    if (value === undefined)
+                        value = '';
+//                    nodes[id].data.pp[pid] = value;
+                    self.savepp(thisId,id,value);
+                });
+
+                $container.find('.node .dd .pp2').focusout(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var id = $(this).attr('id');
+                    id = (id.split('h'))[1];
+                    id = parseInt(id);
+                    var value = $(this).val();
+                    if (value === undefined)
+                        value = '';
+//                    nodes[id].data.pp2[pid] = value;
+
+
+                    self.savepp2(thisId,id,value);
+                });
+            }
+
+            this.savepp = function(id,pid,v){
+                nodes[id].data.pp[pid-1] = v;
+                console.log(nodes[id].data);
+
+            }
+            this.savepp2 = function(id,pid,v){
+                nodes[id].data.pp2[pid-1] = v;
+            }
+
+
+
 
 //---------below is the main logic function--------------
 
-//check if branch close
+//branch close
 function myClose(first, second){
     if(first.operator == '!'){
         if(JSON.stringify( first.argument) === JSON.stringify(second)){
@@ -72,7 +193,7 @@ function myNotOr(origin,first,second){
 
                 }
             }
-            
+
         }
     }
     return false
@@ -181,7 +302,7 @@ function isCorrect(originStatement,newStatements){
             var firstNew = jsep(newStatements[0]);
             var secondNew = jsep(newStatements[1]);
             var thirdNew = jsep(newStatements[2]);
-            var fourthNew = jsep(newStatements[3]);    
+            var fourthNew = jsep(newStatements[3]);
             // console.log(origin);
             if( equal(origin, firstNew,secondNew,thirdNew,fourthNew)){
                 log(originStatement + ' -------> ' +newStatements + ' Check!');
@@ -193,89 +314,7 @@ function isCorrect(originStatement,newStatements){
     return false
 }
 
-//-------------end of main logic function-------------------------
-
-
-
-
-(function($) {
-    $.fn.orgChart = function(options) {
-        var opts = $.extend({}, $.fn.orgChart.defaults, options);
-        return new OrgChart($(this), opts);
-    }
-
-    $.fn.orgChart.defaults = {
-        data: [{id:1, name:'Root', parent: 0, isEnd:false}],
-        showControls: false,
-        allowEdit: false,
-        onAddNode: null,
-        onDeleteNode: null,
-        onClickNode: null,
-        newNodeText: 'Add Child',
-        newTextText: 'Add Title'
-    };
-
-    function rtcheckbox(nid, iter){
-        var st = '<input type="checkbox">';
-        var st2 = '<input type="text" class=pp2>';
-        var h2 = '<h2 hid='+iter+'>'+'sth'+'</h2>';
-        var div = '<div ddid=' + iter + '>' + st+h2 + st2+ '</div>';
-        return div;
-    }
-
-    function rtcheckbox(nid, iter, content){
-        var st = '<input type="text" class=pp id=n' + nid +'h'+iter +'>';
-        var st2 = '<input type="text" class=pp2 id=n' + nid +'h'+iter +'>';
-        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
-        var div = '<div class=dd ddid=' + iter + '>' + st+h2+st2 + '</div>';
-        return div;
-    }
-
-    function rth2(iter, content){
-
-        var h2 = '<h2 hid='+iter+'>'+content+'</h2>';
-        return h2;
-    }
-
-    function showcheck()
-    {
-        $(".checkmark").show();
-    }
-
-
-
-
-    function OrgChart($container, opts){
-        var data = opts.data;
-        var nodes = {};
-        var rootNodes = [];
-        this.opts = opts;
-        this.$container = $container;
-        var self = this;
-
-
-        this.draw = function(){
-            $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
-            $container.append("<div class='checkmark'><\div>");
-
-            $container.append(rootNodes[0].render(opts));
-            $container.find('.node').click(function(){
-                if(self.opts.onClickNode !== null){
-                    self.opts.onClickNode(nodes[$(this).attr('node-id')]);
-                }
-            });
-
-            if(opts.allowEdit){
-                $container.find('.node .dd h2').click(function(e){
-                    var thisId = $(this).parent().parent().attr('node-id');
-                    var hid = $(this).attr('hid');
-                    self.startEdit(thisId,hid);
-                    e.stopPropagation();
-                });
-            }
-
-
-
+// end of main logic function
             function rightdecision(num)
             {
                 var newStatements = [];
@@ -322,6 +361,34 @@ function isCorrect(originStatement,newStatements){
 
 
             }
+
+
+             $container.find('.saveb').click(function(e){
+                 console.log(data);
+                 dd = '';
+//                 for (var i = 0; i < data.length ; i++)
+//                 {
+//                     dd = dd + data[i].map(String);
+//                 }
+                 dd = JSON.stringify(data);
+
+                 //dd = data.map(String);//data.toString();
+                 this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(dd);
+             });
+
+            $container.find('.loadb').click(function(e){
+                 console.log(data);
+                 dd = '';
+//                 for (var i = 0; i < data.length ; i++)
+//                 {
+//                     dd = dd + data[i].map(String);
+//                 }
+                 dd = JSON.stringify(data);
+
+                 //dd = data.map(String);//data.toString();
+                 this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(dd);
+             });
+
             $container.find('.checkb').click(function(e){
                 //alert('ckb!!!');
                 var ccc = $container;
@@ -417,6 +484,31 @@ function isCorrect(originStatement,newStatements){
                     var hid = $(this).attr('hid');
                     self.startEdit(thisId,hid);
                     e.stopPropagation();
+                });
+            $container.find('.node .dd .pp').focusout(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var id = $(this).attr('id');
+                    id = (id.split('h'))[1];
+                    id = parseInt(id);
+                    var value = $(this).val();
+                    if (value === undefined)
+                        value = '';
+//                    nodes[id].data.pp[pid] = value;
+                    self.savepp(thisId,id,value);
+                });
+
+                $container.find('.node .dd .pp2').focusout(function(e){
+                    var thisId = $(this).parent().parent().attr('node-id');
+                    var id = $(this).attr('id');
+                    id = (id.split('h'))[1];
+                    id = parseInt(id);
+                    var value = $(this).val();
+                    if (value === undefined)
+                        value = '';
+//                    nodes[id].data.pp2[pid] = value;
+
+
+                    self.savepp2(thisId,id,value);
                 });
         }
 
@@ -576,12 +668,25 @@ function isCorrect(originStatement,newStatements){
         this.formatNode = function(opts){
             var nameString = '',
                 descString = '';
+
+            if(typeof self.data.pp == 'undefined')
+            {
+                self.data.pp = [];
+                self.data.pp2 = [];
+                if(typeof data.name[0] !== 'undefined'){
+                for(i=0;i<data.name.length;i++)
+                {
+                self.data.pp.push('');
+                self.data.pp2.push('');
+                }
+            }
+            }
+
             if(typeof data.name[0] !== 'undefined'){
                 for(i=0;i<data.name.length;i++)
                 {
                     self.data.isEnd = false;
-                //nameString = nameString+ '<h2 hid='+(i+1)+'>'+self.data.name[i]+'</h2>';
-                    nameString = nameString + rtcheckbox(data.id, i+1, self.data.name[i])
+                    nameString = nameString + rtcheckbox(data.id, i+1, self.data.name[i],self.data.pp[i],self.data.pp2[i])
                     this.iter = i+1;
                 }
             }
@@ -589,6 +694,8 @@ function isCorrect(originStatement,newStatements){
                 self.data.isEnd = false;
                 self.data.name = [];
                 self.data.name.push('');
+                self.data.pp.push('');
+                self.data.pp2.push('');
                 //nameString = nameString+ '<h2 hid='+1+'>'+self.data.name[0]+'</h2>';
                 nameString = nameString + rtcheckbox(data.id, 1,self.data.name[0]);
             }

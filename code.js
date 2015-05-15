@@ -29,11 +29,50 @@ $(function(){
         allowEdit: true,
         onAddNode: function(node){
             log('Created new node on node '+node.data.id);
+            rightBoxList = document.getElementsByClassName("pp2")
+            leftBoxList  = document.getElementsByClassName("pp")
+            // console.log(rightBoxList)
+            myRightBoxList = []
+            myLeftBoxList = []
+            for (i in rightBoxList){
+                myRightBoxList.push( $('#'+rightBoxList[i].id+'.pp2').val() )
+            }
+            
+            for (i in leftBoxList){
+                myLeftBoxList.push( $('#'+leftBoxList[i].id).val() )
+            }
+            // console.log(myRightBoxList)
             org_chart.newNode(node.data.id);
+            for(i in rightBoxList){
+                $('#'+rightBoxList[i].id+'.pp2').val(myRightBoxList[i])
+            }
+            for(i in leftBoxList){
+                $('#'+leftBoxList[i].id).val(myLeftBoxList[i])
+            }
         },
         onDeleteNode: function(node){
             log('Deleted node '+node.data.id);
+            rightBoxList = document.getElementsByClassName("pp2")
+            leftBoxList  = document.getElementsByClassName("pp")
+            // console.log(rightBoxList)
+            myRightBoxList = []
+            myLeftBoxList = []
+            for (i in rightBoxList){
+                myRightBoxList.push( $('#'+rightBoxList[i].id+'.pp2').val() )
+            }
+            
+            for (i in leftBoxList){
+                myLeftBoxList.push( $('#'+leftBoxList[i].id).val() )
+            }
+
             org_chart.deleteNode(node.data.id);
+            for(i in rightBoxList){
+                $('#'+rightBoxList[i].id+'.pp2').val(myRightBoxList[i])
+            }
+            for(i in leftBoxList){
+                $('#'+leftBoxList[i].id).val(myLeftBoxList[i])
+            }
+
         },
         onClickNode: function(node){
             log('Clicked node '+node.data.id);
@@ -53,38 +92,38 @@ $( document ).ready(function() {
     //console.log(document.getElementById("n1h3").set("value","1"));
 
     // -----------example one-----------------
-    // $("#n1h3.pp2").val("1");
-    // $("#n1h4.pp").val("1");
-    // $("#n1h5.pp").val("1");
+    $("#n1h3.pp2").val("1");
+    $("#n1h4.pp").val("1");
+    $("#n1h5.pp").val("1");
 
-    // $("#n1h5.pp2").val("2");
-    // $("#n1h6.pp").val("2");
-    // $("#n1h7.pp").val("2");
+    $("#n1h5.pp2").val("2");
+    $("#n1h6.pp").val("2");
+    $("#n1h7.pp").val("2");
 
-    // $("#n1h1.pp2").val("3");
-    // $("#n2h1.pp").val("3");
-    // $("#n2h2.pp").val("3");
-    // $("#n3h1.pp").val("3");
-    // $("#n3h2.pp").val("3");
+    $("#n1h1.pp2").val("3");
+    $("#n2h1.pp").val("3");
+    $("#n2h2.pp").val("3");
+    $("#n3h1.pp").val("3");
+    $("#n3h2.pp").val("3");
 
-    // $("#n3h1.pp2").val("4");
-    // $("#n3h3.pp").val("4");
+    $("#n3h1.pp2").val("4");
+    $("#n3h3.pp").val("4");
 
-    // $("#n3h2.pp2").val("5");
-    // $("#n3h4.pp").val("5");
+    $("#n3h2.pp2").val("5");
+    $("#n3h4.pp").val("5");
 
-    // $("#n2h2.pp2").val("6");
-    // $("#n1h2.pp2").val("6");
+    $("#n2h2.pp2").val("6");
+    $("#n1h2.pp2").val("6");
 
-    // $("#n3h3.pp2").val("7");
-    // $("#n4h1.pp").val("7");
-    // $("#n5h1.pp").val("7");
+    $("#n3h3.pp2").val("7");
+    $("#n4h1.pp").val("7");
+    $("#n5h1.pp").val("7");
 
-    // $("#n1h6.pp2").val("8");
-    // $("#n4h1.pp2").val("8");
+    $("#n1h6.pp2").val("8");
+    $("#n4h1.pp2").val("8");
 
-    // $("#n1h4.pp2").val("9");
-    // $("#n5h1.pp2").val("9");
+    $("#n1h4.pp2").val("9");
+    $("#n5h1.pp2").val("9");
     // -----------end example one-----------------
 
     // // -----------example two-----------------
