@@ -1,9 +1,18 @@
 TruthTree
 ===============
+Usage:
+and: &
+or: |
+equal: ==
+imply: ->
+not: !
+
 TODO List
-1.when add child or delete child, not reset
-2.add delete title function
-3. add a error marker when exists problem
+1.after load, then add node will not reset everything.
+2.more detailed statement position check.
+3.automatic grading system.
+4.better interface
+
 License
 -------
 MIT
