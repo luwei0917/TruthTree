@@ -400,8 +400,8 @@ function rightdecision(num,nodes,data)
 
         this.draw = function(){
             $container.empty().append('<div class=dc><h2>Check</h2><button type="button" class=checkb>Click Me!</button><\div>');
-            $container.append('<div class=dc><h2></h2><a class=saveb>Save!</button><\div>');
-            $container.append('<div class=dc><h2></h2><a class=loadb>Load!</button><\div>');
+            $container.append('<div class=dc><h2></h2><a class=saveb>Save!</a><\div>');
+            $container.append('<div class=dc><h2></h2><button type="button" class=loadb>Load!</button><\div>');
             $container.append("<div class='checkmark'><\div>");
 
             $container.append(rootNodes[0].render(opts));
@@ -471,7 +471,7 @@ function rightdecision(num,nodes,data)
                  dd = JSON.stringify(data);
 
                  //dd = data.map(String);//data.toString();
-                 this.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(dd);
+                 this.href = "data:application/octet-stream;charset=UTF-8," + encodeURIComponent(dd);
              });
 
             $container.find('.loadb').click(function(e){
@@ -498,6 +498,18 @@ function rightdecision(num,nodes,data)
 
                 });
                 new_org_chart.draw();
+                // $.fn.orgChart({
+                //     data: RESJSON
+                // });
+                // self.draw();
+                var pp = document.getElementsByClassName('pp');
+                for ( var i=0 ; i< pp.length; i++ ){
+                    $(pp[i]).trigger('focusout');
+                }
+                var pp2 = document.getElementsByClassName('pp2');
+                for ( var i=0 ; i< pp2.length; i++ ){
+                    $(pp2[i]).trigger('focusout');
+                }
                 console.log( opts.data );
                 console.log('-!!!--')
 
