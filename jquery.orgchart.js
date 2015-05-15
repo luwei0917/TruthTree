@@ -268,7 +268,15 @@ function equal(origin,first,second,third,fourth){
     return false
 }
 
-function isCorrect(originStatement,newStatements){
+function isCorrect(originStatement,newStatements,newNodeList){
+    console.log(newNodeList);
+    number = [];
+    var myRe = /\d+/;
+    console.log(myRe.exec(newNodeList[0]) )
+    for (i in newNodeList) {
+        number.push( parseInt(newNodeList[i].split(/(\d)/)[0])  );
+    }
+    console.log(number)
     if (originStatement.length == 1){
         if(newStatements.length == 1){
             var origin = jsep(originStatement[0]);
@@ -320,13 +328,18 @@ function isCorrect(originStatement,newStatements){
                 var newStatements = [];
                 var originStatement = [];
                 var originNodeList = [];
+                var newNodeList = [];
                 //alert('got ' + num);
                 var x = document.getElementsByClassName("pp");
                 for (var i = 0; i < x.length; i++)
                 {
-                    if ($(x[i]).val() == num)
+                    if ($(x[i]).val() == num){
                         newStatements.push($(x[i]).parent().find('h2').text());
+                        newNodeList.push( $(x[i]).attr('id') )
+                    }
+
                 }
+                console.log($(x[0]))
                 x = document.getElementsByClassName("pp2");
                 for (var i = 0; i < x.length; i++)
                 {
@@ -350,14 +363,14 @@ function isCorrect(originStatement,newStatements){
                             if (number > myMaxNumber ){
                                 myMaxNumber = number;
                             }
-                            console.log(i);
+                            // console.log(i);
                         }
                         nodes[myMaxNumber].data.isEnd = true;
-                        console.log(nodes);
+                        // console.log(nodes);
                         log(originStatement + ' -------> '+  ' Branch ' +myMaxNumber+ ' Closed');
                         return true
                 }
-                return isCorrect(originStatement,newStatements)
+                return isCorrect(originStatement,newStatements,newNodeList)
 
 
             }
@@ -428,7 +441,7 @@ function isCorrect(originStatement,newStatements){
                     }
                 }
                 if(allDone == true && someFalse == false){
-                    alert('Congratulation');
+                    // alert('Congratulation');
                     $(".checkmark").show();
 
                 }
