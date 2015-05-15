@@ -7,11 +7,11 @@ Usage:
 * imply: ->
 * not: !
 
-TODO List
-1. after load, then add node will not reset everything.
-2. more detailed statement position check.
-3. automatic grading system.
-4. better interface
+TODO List:
+* after load, then add node will not reset everything.
+* more detailed statement position check.
+* automatic grading system.
+* better interface
 
 License
 -------
